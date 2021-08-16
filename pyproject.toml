@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snek_inspyred"
-version = "1.0"
+version = "1.1"
 description = "The classic snake game, just in Python."
 authors = ["Taylor B. <43686206+tayjaybabee@users.noreply.github.com>"]
 license = "MIT"

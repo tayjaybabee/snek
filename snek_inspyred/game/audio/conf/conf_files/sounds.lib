@@ -1,0 +1,4 @@
+[DEFAULT]
+eat-food = C:\Users\tayja\PycharmProjects\snek\snek_inspyred\game\audio\assets\eat_food_1.wav
+begin-game = C:\Users\tayja\PycharmProjects\snek\snek_inspyred\game\audio\assets\start_fanfare_1.wav
+

@@ -1,0 +1,34 @@
+[tool.poetry]
+name = "snek_inspyred"
+version = "1.0"
+description = "The classic snake game, just in Python."
+authors = ["Taylor B. <43686206+tayjaybabee@users.noreply.github.com>"]
+license = "MIT"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Win32 (MS Windows)",
+    "Environment :: X11 Applications :: GTK",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Games/Entertainment :: Arcade",
+    "Topic :: Games/Entertainment"
+]
+
+[tool.poetry.urls]
+"GitHub" = "https://github.com/Inspyre-Softworks/snek"
+"PyPi" = 'https://pypi.org/t.blackstone/snek'
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pygame = "^2.0.1"
+
+[tool.poetry.dev-dependencies]
+Sphinx = "^4.1.2"
+
+[tool.poetry.scripts]
+snek = 'snek_inspyred.main:snek.main'
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

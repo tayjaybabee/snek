@@ -3,6 +3,7 @@ import random
 import sys
 
 from snek_inspyred.helpers import State
+from snek_inspyred.game.highscore import save_high_score
 
 pygame.init()
 
@@ -130,6 +131,7 @@ class Snake(object):
             None
 
         """
+        save_high_score(self.score)
         self.length = 1
         self.positions = [((self.screen.width / 2), (self.screen.height / 2))]
         self.direction = random.choice([self._move.UP, self._move.DOWN, self._move.LEFT, self._move.RIGHT])

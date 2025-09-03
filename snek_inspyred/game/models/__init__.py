@@ -3,6 +3,7 @@ import random
 import sys
 
 from snek_inspyred.helpers import State
+from snek_inspyred.game.highscore import maybe_record_high_score
 
 pygame.init()
 
@@ -95,9 +96,7 @@ class Snake(object):
             None
 
         """
-        paused = False
         for event in pygame.event.get():
-            print(event.type)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -109,6 +108,7 @@ class Snake(object):
             if not self.state.is_paused():
 
                 if event.type == pygame.QUIT:
+                    maybe_record_high_score(self.screen.display, self.screen, self.score)
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
@@ -130,6 +130,7 @@ class Snake(object):
             None
 
         """
+        maybe_record_high_score(self.screen.display, self.screen, self.score)
         self.length = 1
         self.positions = [((self.screen.width / 2), (self.screen.height / 2))]
         self.direction = random.choice([self._move.UP, self._move.DOWN, self._move.LEFT, self._move.RIGHT])

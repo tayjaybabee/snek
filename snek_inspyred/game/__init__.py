@@ -1,8 +1,9 @@
 import sys
+import math
 import pygame
 from snek_inspyred.game.models import Snake, Food
 from snek_inspyred.game.audio import Sounds
-from snek_inspyred.game.highscore import load_high_scores, save_high_score
+from snek_inspyred.game.highscore import load_high_scores, maybe_record_high_score
 
 
 class Screen(object):
@@ -42,9 +43,12 @@ def show_high_scores(display, screen):
         title = font.render('High Scores', True, (255, 255, 255))
         display.blit(title, (screen.width // 2 - title.get_width() // 2, 50))
         scores = load_high_scores()
-        for idx, score in enumerate(scores):
-            text = font.render(f"{idx + 1}. {score}", True, (255, 255, 255))
-            display.blit(text, (screen.width // 2 - text.get_width() // 2, 100 + idx * 30))
+        for idx, (name, score) in enumerate(scores):
+            text = font.render(f"{idx + 1}. {name} - {score}", True, (255, 255, 255))
+            display.blit(
+                text,
+                (screen.width // 2 - text.get_width() // 2, 100 + idx * 30),
+            )
         display.blit(back_text, (screen.width // 2 - back_text.get_width() // 2, screen.height - 80))
         pygame.display.update()
         clock.tick(15)
@@ -107,34 +111,35 @@ def pause_screen(display, screen, snake):
     font = pygame.font.SysFont('monospace', 32)
     small_font = pygame.font.SysFont('monospace', 24)
     clock = pygame.time.Clock()
-    # offsets used to move the text to avoid screen burn-in
-    offset_x, offset_y = 0, 0
-    dir_x, dir_y = 1, 1
-    max_offset = 20
+    # angle used to move the text to avoid screen burn-in
+    angle = 0
     while snake.state.is_paused():
         display.fill((0, 0, 0))
         title = font.render('Paused', True, (255, 255, 255))
         resume = small_font.render('Space - Resume', True, (255, 255, 255))
         quit_text = small_font.render('Q - Quit Game', True, (255, 255, 255))
-
-        offset_x += dir_x
-        offset_y += dir_y
-        if abs(offset_x) > max_offset:
-            dir_x *= -1
-            offset_x += dir_x
-        if abs(offset_y) > max_offset:
-            dir_y *= -1
-            offset_y += dir_y
+        angle = (angle + 2) % 360
+        offset_x = int(20 * math.cos(math.radians(angle)))
+        offset_y = int(20 * math.sin(math.radians(angle)))
 
         base_x = screen.width // 2
-        display.blit(title, (base_x - title.get_width() // 2 + offset_x, screen.height // 2 - 60 + offset_y))
-        display.blit(resume, (base_x - resume.get_width() // 2 + offset_x, screen.height // 2 + offset_y))
-        display.blit(quit_text, (base_x - quit_text.get_width() // 2 + offset_x, screen.height // 2 + 40 + offset_y))
+        display.blit(
+            title,
+            (base_x - title.get_width() // 2 + offset_x, screen.height // 2 - 60 + offset_y),
+        )
+        display.blit(
+            resume,
+            (base_x - resume.get_width() // 2 + offset_x, screen.height // 2 + offset_y),
+        )
+        display.blit(
+            quit_text,
+            (base_x - quit_text.get_width() // 2 + offset_x, screen.height // 2 + 40 + offset_y),
+        )
         pygame.display.update()
         clock.tick(15)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                save_high_score(snake.score)
+                maybe_record_high_score(display, screen, snake.score)
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
@@ -142,7 +147,7 @@ def pause_screen(display, screen, snake):
                     snake.state.unpause()
                     return
                 if event.key == pygame.K_q and confirm_quit(display, screen):
-                    save_high_score(snake.score)
+                    maybe_record_high_score(display, screen, snake.score)
                     pygame.quit()
                     sys.exit()
 

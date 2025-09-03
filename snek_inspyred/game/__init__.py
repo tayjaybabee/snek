@@ -80,6 +80,55 @@ def start_screen(display, screen):
                 if event.key == pygame.K_h:
                     show_high_scores(display, screen)
 
+
+def confirm_quit(display, screen):
+    """Ask the user to confirm quitting the game."""
+    font = pygame.font.SysFont('monospace', 24)
+    clock = pygame.time.Clock()
+    while True:
+        display.fill((0, 0, 0))
+        prompt = font.render('Quit game? Y/N', True, (255, 255, 255))
+        display.blit(prompt, (screen.width // 2 - prompt.get_width() // 2, screen.height // 2))
+        pygame.display.update()
+        clock.tick(15)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_y:
+                    return True
+                if event.key == pygame.K_n:
+                    return False
+
+
+def pause_screen(display, screen, snake):
+    """Display pause menu allowing resume or quit."""
+    font = pygame.font.SysFont('monospace', 32)
+    small_font = pygame.font.SysFont('monospace', 24)
+    clock = pygame.time.Clock()
+    while snake.state.is_paused():
+        display.fill((0, 0, 0))
+        title = font.render('Paused', True, (255, 255, 255))
+        resume = small_font.render('Space - Resume', True, (255, 255, 255))
+        quit_text = small_font.render('Q - Quit Game', True, (255, 255, 255))
+        display.blit(title, (screen.width // 2 - title.get_width() // 2, screen.height // 2 - 60))
+        display.blit(resume, (screen.width // 2 - resume.get_width() // 2, screen.height // 2))
+        display.blit(quit_text, (screen.width // 2 - quit_text.get_width() // 2, screen.height // 2 + 40))
+        pygame.display.update()
+        clock.tick(15)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    snake.state.unpause()
+                    return
+                if event.key == pygame.K_q and confirm_quit(display, screen):
+                    pygame.quit()
+                    sys.exit()
+
 def main():
     pygame.init()
 
@@ -104,6 +153,10 @@ def main():
         clock.tick(10)
 
         snake.check_keys()
+        if snake.state.is_paused():
+            pause_screen(display, screen, snake)
+            continue
+
         screen.Grid.draw(surface)
         snake.move()
         if snake.get_head_position() == food.position:

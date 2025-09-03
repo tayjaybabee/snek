@@ -96,9 +96,7 @@ class Snake(object):
             None
 
         """
-        paused = False
         for event in pygame.event.get():
-            print(event.type)
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
@@ -110,6 +108,7 @@ class Snake(object):
             if not self.state.is_paused():
 
                 if event.type == pygame.QUIT:
+                    save_high_score(self.score)
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
